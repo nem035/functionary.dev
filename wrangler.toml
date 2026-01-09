@@ -1,0 +1,28 @@
+name = "functionary"
+main = "src/index.ts"
+compatibility_date = "2026-01-04"
+workers_dev = true
+
+routes = [
+  { pattern = "functionary.dev", custom_domain = true },
+  { pattern = "www.functionary.dev", custom_domain = true }
+]
+
+[[r2_buckets]]
+binding = "ASSETS"
+bucket_name = "functionary-assets"
+
+[vars]
+APP_BASE_URL = "http://127.0.0.1:8787"
+
+[env.production]
+name = "functionary"
+[env.production.vars]
+APP_BASE_URL = "https://functionary.dev"
+
+[observability]
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+invocation_logs = true
+persist = true

@@ -1,0 +1,14 @@
+.DS_Store
+
+# deps
+node_modules/
+
+# Wrangler / Cloudflare local state
+.wrangler/
+
+# Tailwind build temp output
+.tmp.tailwind.css
+
+# Logs
+*.log
+
