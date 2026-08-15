@@ -36,6 +36,12 @@ const eslintConfig = defineConfig([
       },
     },
   },
+  {
+    files: ["app/RepoCity.tsx"],
+    rules: {
+      "react/no-unknown-property": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;

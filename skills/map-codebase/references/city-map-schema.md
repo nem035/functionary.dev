@@ -1,4 +1,4 @@
-# Repo City map schema
+# Functionary City map schema
 
 ## Contents
 
@@ -12,7 +12,7 @@
 
 ## Output location
 
-Write UTF-8 JSON to `.repo-city/map.json` at the repository root. Use two-space indentation and end the file with a newline.
+Write UTF-8 JSON to `.functionary/map.json` at the repository root. Use two-space indentation and end the file with a newline. Treat `.repo-city/map.json` as a legacy input when refreshing an existing map.
 
 ## Root object
 
@@ -54,6 +54,8 @@ Optional node fields:
 - `display.position`: optional `[x, z]` coordinates.
 - `display.size`: optional `[width, height, depth]` dimensions. Keep each value positive.
 - `display.color`: optional CSS hex color.
+- `display.flowLayer`: optional non-negative integer. `0` is the repository's public or operator-facing boundary; larger values move downstream through orchestration, core compute, runtime, state, and external systems.
+- `display.flowOrder`: optional non-negative number used to stabilize left-to-right order inside a flow layer.
 
 Use lowercase kebab-case stable IDs. Do not encode absolute filesystem paths or commit hashes into IDs.
 
@@ -86,9 +88,20 @@ Suggested inferred confidence:
 - `0.50–0.69`: plausible but weak; add a warning when architecturally important.
 - Below `0.50`: omit unless the uncertainty itself is useful.
 
-## Visual defaults
+## Flow and visual defaults
 
-Omit `display` when no layout is justified. When providing it:
+Every useful map should describe front-to-back flow. Choose the correct boundary for the repository rather than assuming a browser user:
+
+- app or service: request, event, UI, gateway, or scheduled trigger;
+- library or framework: public exports and supported APIs;
+- CLI: command parser and dispatch;
+- compiler or build tool: source input through emission;
+- data or ML system: ingestion through transform, model, serving, or sink;
+- infrastructure/controller: operator input through reconciliation to managed resources.
+
+Assign `flowLayer: 0` to that boundary and increase the layer downstream. Branching dependencies share a layer and fan outward with `flowOrder`. Cycles may share a layer when forcing an order would misrepresent the system. The viewer can infer missing layers from edge direction and node meaning, but agent-authored layers are preferred when supported by evidence.
+
+When providing other display hints:
 
 - Scale footprint roughly with code or resource size.
 - Scale height with internal depth or another documented metric.

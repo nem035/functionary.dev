@@ -1,4 +1,4 @@
 interface:
   display_name: "Map Codebase"
-  short_description: "Map any repository into a semantic 3D city"
-  default_prompt: "Use $map-codebase to inspect this repository and generate a validated Repo City map."
+  short_description: "Map any repository as a semantic system flow"
+  default_prompt: "Use $map-codebase to inspect this repository and generate a validated Functionary City map."

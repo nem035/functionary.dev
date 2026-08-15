@@ -26,6 +26,8 @@ export type CityNode = {
     position?: [number, number];
     size?: [number, number, number];
     color?: string;
+    flowLayer?: number;
+    flowOrder?: number;
   };
 };
 
@@ -79,6 +81,8 @@ export function validateCityMap(value: unknown): string[] {
     if (!node.label || typeof node.label !== "string") errors.push(`${prefix}.label must be a non-empty string.`);
     if (!NODE_KINDS.has(node.kind)) errors.push(`${prefix}.kind is not supported.`);
     if (!ARCHETYPES.has(node.archetype)) errors.push(`${prefix}.archetype is not supported.`);
+    if (node.display?.flowLayer !== undefined && (!Number.isInteger(node.display.flowLayer) || node.display.flowLayer < 0)) errors.push(`${prefix}.display.flowLayer must be a non-negative integer.`);
+    if (node.display?.flowOrder !== undefined && (!Number.isFinite(node.display.flowOrder) || node.display.flowOrder < 0)) errors.push(`${prefix}.display.flowOrder must be a non-negative number.`);
   });
 
   map.nodes!.forEach((node) => {

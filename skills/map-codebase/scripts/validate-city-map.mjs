@@ -32,6 +32,8 @@ function validate(map) {
     if (node.parentId !== undefined) parents.set(node.id, node.parentId);
     if (node.display?.position && (!Array.isArray(node.display.position) || node.display.position.length !== 2 || node.display.position.some((v) => !Number.isFinite(v)))) errors.push(`${at}.display.position must contain two finite numbers.`);
     if (node.display?.size && (!Array.isArray(node.display.size) || node.display.size.length !== 3 || node.display.size.some((v) => !Number.isFinite(v) || v <= 0))) errors.push(`${at}.display.size must contain three positive finite numbers.`);
+    if (node.display?.flowLayer !== undefined && (!Number.isInteger(node.display.flowLayer) || node.display.flowLayer < 0)) errors.push(`${at}.display.flowLayer must be a non-negative integer.`);
+    if (node.display?.flowOrder !== undefined && (!Number.isFinite(node.display.flowOrder) || node.display.flowOrder < 0)) errors.push(`${at}.display.flowOrder must be a non-negative number.`);
   });
 
   for (const [id, parentId] of parents) {
@@ -73,11 +75,11 @@ try {
   const map = JSON.parse(await readFile(resolve(file), "utf8"));
   const errors = validate(map);
   if (errors.length) {
-    console.error(`Invalid Repo City map (${errors.length} problem${errors.length === 1 ? "" : "s"}):`);
+    console.error(`Invalid Functionary City map (${errors.length} problem${errors.length === 1 ? "" : "s"}):`);
     errors.forEach((error) => console.error(`- ${error}`));
     process.exit(1);
   }
-  console.log(`Valid Repo City map: ${map.name} (${map.nodes.length} nodes, ${map.edges.length} edges)`);
+  console.log(`Valid Functionary City map: ${map.name} (${map.nodes.length} nodes, ${map.edges.length} edges)`);
 } catch (error) {
   console.error(`Could not validate map: ${error instanceof Error ? error.message : String(error)}`);
   process.exit(1);

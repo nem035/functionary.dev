@@ -16,16 +16,16 @@ async function render() {
   );
 }
 
-test("server-renders the Repo City product surface and metadata", async () => {
+test("server-renders the Functionary atlas and metadata", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Repo City — Semantic codebase maps<\/title>/i);
-  assert.match(html, /Repo City/);
-  assert.match(html, /Commerce platform/);
-  assert.match(html, /Import agent map/);
+  assert.match(html, /<title>Functionary — See how the whole repository flows<\/title>/i);
+  assert.match(html, /functionary\.dev/i);
+  assert.match(html, /Famous systems/i);
+  assert.match(html, /Map your repository/i);
   assert.match(html, /http:\/\/localhost\/og\.png/);
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
 });
@@ -39,9 +39,9 @@ test("ships the map skill and removes disposable starter files", async () => {
   ]);
 
   assert.match(skill, /name: map-codebase/);
-  assert.match(skill, /\.repo-city\/map\.json/);
+  assert.match(skill, /\.functionary\/map\.json/);
   assert.match(schema, /schemaVersion/);
-  assert.match(validator, /Valid Repo City map/);
+  assert.match(validator, /Valid Functionary City map/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   await access(new URL("../public/og.png", import.meta.url));
   await assert.rejects(access(new URL("app/_sites-preview/SkeletonPreview.tsx", root)));

@@ -38,3 +38,6 @@ yarn-error.log*
 /.wrangler/
 /outputs/
 /work/
+/packages/cli/dist/
+/packages/cli/*.tgz
+/tsconfig.tsbuildinfo

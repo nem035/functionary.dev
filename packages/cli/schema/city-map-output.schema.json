@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "integer", "const": 1 },
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "repository": { "type": ["string", "null"] },
+    "summary": { "type": ["string", "null"] },
+    "generatedAt": { "type": ["string", "null"] },
+    "nodes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/node" }
+    },
+    "edges": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/edge" }
+    },
+    "warnings": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "required": ["schemaVersion", "id", "name", "repository", "summary", "generatedAt", "nodes", "edges", "warnings"],
+  "additionalProperties": false,
+  "$defs": {
+    "sourceRef": {
+      "type": "object",
+      "properties": {
+        "path": { "type": ["string", "null"] },
+        "line": { "type": ["integer", "null"] },
+        "url": { "type": ["string", "null"] },
+        "note": { "type": ["string", "null"] }
+      },
+      "required": ["path", "line", "url", "note"],
+      "additionalProperties": false
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "loc": { "type": ["number", "null"] },
+        "size": { "type": ["number", "null"] },
+        "complexity": { "type": ["number", "null"] },
+        "churn": { "type": ["number", "null"] },
+        "rooms": { "type": ["number", "null"] },
+        "routes": { "type": ["number", "null"] },
+        "tables": { "type": ["number", "null"] },
+        "topics": { "type": ["number", "null"] }
+      },
+      "required": ["loc", "size", "complexity", "churn", "rooms", "routes", "tables", "topics"],
+      "additionalProperties": false
+    },
+    "display": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "anyOf": [
+            { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+            { "type": "null" }
+          ]
+        },
+        "size": {
+          "anyOf": [
+            { "type": "array", "items": { "type": "number", "exclusiveMinimum": 0 }, "minItems": 3, "maxItems": 3 },
+            { "type": "null" }
+          ]
+        },
+        "color": { "anyOf": [{ "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }, { "type": "null" }] },
+        "flowLayer": { "type": ["integer", "null"], "minimum": 0 },
+        "flowOrder": { "type": ["number", "null"], "minimum": 0 }
+      },
+      "required": ["position", "size", "color", "flowLayer", "flowOrder"],
+      "additionalProperties": false
+    },
+    "node": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "kind": { "type": "string", "enum": ["scope", "deployable", "module", "infra", "external"] },
+        "archetype": { "type": "string", "enum": ["district", "building", "room", "gateway", "worker", "database", "queue", "storage", "cloud"] },
+        "parentId": { "type": ["string", "null"] },
+        "description": { "type": ["string", "null"] },
+        "sourceRefs": { "type": "array", "items": { "$ref": "#/$defs/sourceRef" } },
+        "metrics": { "$ref": "#/$defs/metrics" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "display": { "anyOf": [{ "$ref": "#/$defs/display" }, { "type": "null" }] }
+      },
+      "required": ["id", "label", "kind", "archetype", "parentId", "description", "sourceRefs", "metrics", "tags", "display"],
+      "additionalProperties": false
+    },
+    "edge": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "from": { "type": "string" },
+        "to": { "type": "string" },
+        "kind": { "type": "string", "enum": ["depends_on", "calls", "data_flow", "deploys"] },
+        "evidence": { "type": "string", "enum": ["declared", "observed", "inferred"] },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "label": { "type": ["string", "null"] },
+        "weight": { "type": ["number", "null"] },
+        "sourceRefs": { "type": "array", "items": { "$ref": "#/$defs/sourceRef" } }
+      },
+      "required": ["id", "from", "to", "kind", "evidence", "confidence", "label", "weight", "sourceRefs"],
+      "additionalProperties": false
+    }
+  }
+}

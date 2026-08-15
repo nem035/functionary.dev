@@ -1,0 +1,30 @@
+{
+  "name": "functionary-cli",
+  "version": "0.2.0",
+  "description": "Map any repository into a validated, source-linked system city using Codex.",
+  "type": "module",
+  "bin": {
+    "functionary": "bin/repo-city.mjs",
+    "repo-city": "bin/repo-city.mjs"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "dist",
+    "schema"
+  ],
+  "scripts": {
+    "prepack": "node scripts/prepare-package.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "codex",
+    "codebase",
+    "architecture",
+    "visualization"
+  ],
+  "license": "MIT"
+}
