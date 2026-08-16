@@ -2,6 +2,20 @@
   "name": "functionary-cli",
   "version": "0.3.0",
   "description": "Map any repository into a validated, source-linked system city using any AI coding agent.",
+  "author": "Nemanja Stojanovic",
+  "homepage": "https://functionary.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nem035/functionary.dev.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/nem035/functionary.dev/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "type": "module",
   "bin": {
     "functionary": "bin/repo-city.mjs",
