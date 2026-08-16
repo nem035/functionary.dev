@@ -334,7 +334,8 @@ function Structure({ node, position, selected, hasInterior, expanded = false, in
 
   return (
     <group ref={group} position={[position[0], (height * initialScale) / 2, position[1]]} scale={[initialScale, initialScale, initialScale]}>
-      <mesh
+      {!expanded && <>
+        <mesh
         geometry={geometry}
         castShadow
         receiveShadow
@@ -343,26 +344,27 @@ function Structure({ node, position, selected, hasInterior, expanded = false, in
         onPointerEnter={() => { setHovered(true); document.body.style.cursor = "pointer"; }}
         onPointerLeave={() => { setHovered(false); document.body.style.cursor = "default"; }}
         scale={selected ? 1.075 : 1}
-      >
-        <meshStandardMaterial
-          ref={material}
-          color={color}
-          roughness={0.86}
-          transparent
-          opacity={interior ? 0 : node.kind === "external" ? 0.82 : 1}
-          emissive={selected || hovered ? color : "#000000"}
-          emissiveIntensity={selected ? 0.32 : hovered ? 0.1 : 0}
-        />
-      </mesh>
-      <lineSegments geometry={outline} scale={selected ? 1.06 : 1.006}>
-        <lineBasicMaterial color={SCENE_INK} transparent opacity={dimmed ? 0.2 : expanded ? 0.38 : 1} />
-      </lineSegments>
-      {node.archetype !== "database" && node.archetype !== "cloud" && Array.from({ length: floorCount }, (_, floor) => (
-        <mesh key={floor} position={[0, -height / 2 + ((floor + 1) * height) / (floorCount + 1), depth / 2 + 0.008]}>
-          <planeGeometry args={[width * 0.86, 0.018]} />
-          <meshBasicMaterial color={SCENE_INK} transparent opacity={dimmed ? 0.12 : expanded ? 0.2 : 0.56} />
+        >
+          <meshStandardMaterial
+            ref={material}
+            color={color}
+            roughness={0.86}
+            transparent
+            opacity={interior ? 0 : node.kind === "external" ? 0.82 : 1}
+            emissive={selected || hovered ? color : "#000000"}
+            emissiveIntensity={selected ? 0.32 : hovered ? 0.1 : 0}
+          />
         </mesh>
-      ))}
+        <lineSegments geometry={outline} scale={selected ? 1.06 : 1.006}>
+          <lineBasicMaterial color={SCENE_INK} transparent opacity={dimmed ? 0.2 : 1} />
+        </lineSegments>
+        {node.archetype !== "database" && node.archetype !== "cloud" && Array.from({ length: floorCount }, (_, floor) => (
+          <mesh key={floor} position={[0, -height / 2 + ((floor + 1) * height) / (floorCount + 1), depth / 2 + 0.008]}>
+            <planeGeometry args={[width * 0.86, 0.018]} />
+            <meshBasicMaterial color={SCENE_INK} transparent opacity={dimmed ? 0.12 : 0.56} />
+          </mesh>
+        ))}
+      </>}
     </group>
   );
 }
