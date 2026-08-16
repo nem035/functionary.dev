@@ -121,7 +121,7 @@ function FlowBands({ layout }: { layout: FlowLayout }) {
   });
 }
 
-function NeighborhoodPlots({ layout, selectedId, activeNeighborhoodId }: { layout: FlowLayout; selectedId: string; activeNeighborhoodId: string | null }) {
+function NeighborhoodPlots({ layout, selectedId, activeNeighborhoodId, hideLabels = false }: { layout: FlowLayout; selectedId: string; activeNeighborhoodId: string | null; hideLabels?: boolean }) {
   const colors = ["#c8dfe2", "#cddbcf", "#d7d2e5", "#e2cfd7", "#c9d7e6"];
 
   return layout.neighborhoods.map((neighborhood, index) => {
@@ -151,7 +151,7 @@ function NeighborhoodPlots({ layout, selectedId, activeNeighborhoodId }: { layou
         <meshBasicMaterial color={colors[index % colors.length]} transparent opacity={dimmed ? 0.1 : active ? 0.5 : 0.34} depthWrite={false} />
       </mesh>
       <Line points={outline} color={active ? SCENE_INK : "#70878c"} lineWidth={active ? 1.55 : 0.9} transparent opacity={dimmed ? 0.16 : active ? 0.9 : 0.62} />
-      <group position={[centerX, 0.048, signZ]} rotation={[-Math.PI / 2, 0, 0]}>
+      {!hideLabels && <group position={[centerX, 0.048, signZ]} rotation={[-Math.PI / 2, 0, 0]}>
         <mesh>
           <planeGeometry args={[signWidth, signHeight]} />
           <meshBasicMaterial color={active ? SCENE_INK : SCENE_PANEL} transparent opacity={dimmed ? 0.24 : 0.98} />
@@ -199,7 +199,7 @@ function NeighborhoodPlots({ layout, selectedId, activeNeighborhoodId }: { layou
         >
           {neighborhood.label}
         </Text>
-      </group>
+      </group>}
     </group>;
   });
 }
@@ -601,7 +601,7 @@ function CityScene({ nodes, allNodes, edges, allEdges, selectedId, activeEdgeId,
       <ambientLight intensity={1.6} />
       <directionalLight position={[-6, 12, 7]} intensity={2.25} castShadow shadow-mapSize={[1024, 1024]} />
       <gridHelper args={[80, 80, "#91a7ab", "#c1d0d2"]} position={[0, -0.035, 0]} />
-      <NeighborhoodPlots layout={layout} selectedId={selectedId} activeNeighborhoodId={neighborhoodId} />
+      <NeighborhoodPlots layout={layout} selectedId={selectedId} activeNeighborhoodId={neighborhoodId} hideLabels={!!interiorModel} />
       <FlowBands layout={layout} />
       <Connections edges={edges} positions={layout.positions} activeEdgeId={activeEdgeId} focusedEdgeIds={focusModel?.edgeIds} />
       {interiorModel && <>
@@ -611,7 +611,7 @@ function CityScene({ nodes, allNodes, edges, allEdges, selectedId, activeEdgeId,
       {nodes.map((node, index) => (
         <group key={node.id}>
           <Structure node={node} position={layout.positions.get(node.id)!} selected={node.id === selectedId} hasInterior={allNodes.some((candidate) => candidate.parentId === node.id)} expanded={node.id === expandedId} dimmed={interiorModel ? node.id !== expandedId : neighborhoodModel ? !neighborhoodModel.nodeIds.has(node.id) : !!focusModel && !focusModel.nodeIds.has(node.id)} onSelect={() => onSelect(node.id)} onEnter={() => onEnter(node.id)} />
-          <MapMarker node={node} index={index} position={layout.positions.get(node.id)!} selected={node.id === selectedId} hasInterior={allNodes.some((candidate) => candidate.parentId === node.id)} expanded={node.id === expandedId} exploring={node.id === focusId} dimmed={interiorModel ? node.id !== expandedId : neighborhoodModel ? !neighborhoodModel.nodeIds.has(node.id) : !!focusModel && !focusModel.nodeIds.has(node.id)} onSelect={() => onSelect(node.id)} onEnter={() => onEnter(node.id)} />
+          {(!interiorModel || node.id === expandedId) && <MapMarker node={node} index={index} position={layout.positions.get(node.id)!} selected={node.id === selectedId} hasInterior={allNodes.some((candidate) => candidate.parentId === node.id)} expanded={node.id === expandedId} exploring={node.id === focusId} dimmed={neighborhoodModel ? !neighborhoodModel.nodeIds.has(node.id) : !!focusModel && !focusModel.nodeIds.has(node.id)} onSelect={() => onSelect(node.id)} onEnter={() => onEnter(node.id)} />}
         </group>
       ))}
       {interiorModel?.children.map((node, index) => (
