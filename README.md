@@ -25,6 +25,12 @@ read-only repository access; the CLI writes only the captured map. The package
 contains the mapping skill, structured-output schema, and deterministic
 validator.
 
+Functionary can optionally use [Codebase Memory](https://github.com/DeusData/codebase-memory-mcp)
+as a fast structural index. When `codebase-memory-mcp` is installed, the CLI
+automatically gives its compact call/import/package evidence to the mapping
+agent, which still verifies architectural claims in the repository. The index
+uses a temporary cache and is never rendered directly as the city.
+
 Useful commands:
 
 ```bash
@@ -32,7 +38,14 @@ functionary validate ~/Dev/my-project
 functionary skill
 functionary map ~/Dev/my-project --output /tmp/my-project-map.json
 functionary map ~/Dev/my-project --verbose
+functionary map ~/Dev/my-project --evidence none
+functionary map ~/Dev/my-project --evidence codebase-memory
+functionary map ~/Dev/my-project --codebase-memory /path/to/codebase-memory-mcp
 ```
+
+`--evidence auto` is the default and falls back cleanly to agent-only mapping.
+Use `--evidence codebase-memory` when a missing or failed analyzer should stop
+the run instead.
 
 The legacy `repo-city` command remains as an alias, and validation still finds
 existing `.repo-city/map.json` files.

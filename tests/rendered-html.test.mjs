@@ -31,17 +31,40 @@ test("server-renders the Functionary atlas and metadata", async () => {
 });
 
 test("ships the map skill and removes disposable starter files", async () => {
-  const [skill, schema, validator, packageJson] = await Promise.all([
+  const [skill, schema, validator, packageJson, viewer] = await Promise.all([
     readFile(new URL("../skills/map-codebase/SKILL.md", import.meta.url), "utf8"),
     readFile(new URL("../skills/map-codebase/references/city-map-schema.md", import.meta.url), "utf8"),
     readFile(new URL("../skills/map-codebase/scripts/validate-city-map.mjs", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
+    readFile(new URL("../app/RepoCity.tsx", import.meta.url), "utf8"),
   ]);
 
   assert.match(skill, /name: map-codebase/);
   assert.match(skill, /\.functionary\/map\.json/);
   assert.match(schema, /schemaVersion/);
+  assert.match(skill, /every building at least two direct children/i);
+  assert.match(skill, /never normalize buildings to a repeated count/i);
+  assert.match(skill, /Record GitHub repositories as/);
+  assert.match(validator, /must contain at least two rooms/);
   assert.match(validator, /Valid Functionary City map/);
+  assert.match(viewer, /function InteriorPlot/);
+  assert.match(viewer, /function MapMarker/);
+  assert.match(viewer, /footprintWidth, footprintDepth/);
+  assert.match(viewer, /the city remains around you/);
+  assert.match(viewer, /addEventListener\?\.\("start", releaseCamera\)/);
+  assert.match(viewer, /function closestVisibleAncestor/);
+  assert.match(viewer, /function NeighborhoodPlots/);
+  assert.match(viewer, /activeEdgeId/);
+  assert.match(viewer, /const focusModel/);
+  assert.match(viewer, /Click a connected structure to trace that path/);
+  assert.match(viewer, /focusedEdgeIds/);
+  assert.doesNotMatch(viewer, /structure-label|structure-pin|interior-world-label/);
+  assert.doesNotMatch(viewer, /flow-stage-label|<Html/);
+  assert.doesNotMatch(viewer, /Component layer|Relationship evidence|type ViewMode|changeMode/);
+  assert.doesNotMatch(viewer, /How it connects|connection-path|className="interior-preview"/);
+  assert.match(viewer, /blob\/HEAD/);
+  assert.match(viewer, /Escape/);
+  assert.doesNotMatch(viewer, /No interior map|Selected structure|deployable · building|Explore \{selectedChildren\.length\} room/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   await access(new URL("../public/og.png", import.meta.url));
   await assert.rejects(access(new URL("app/_sites-preview/SkeletonPreview.tsx", root)));

@@ -89,6 +89,14 @@ export function validateCityMap(value: unknown): string[] {
     if (node.parentId && !ids.has(node.parentId)) errors.push(`Node "${node.id}" references missing parent "${node.parentId}".`);
   });
 
+  const usesFlowContract = map.nodes!.some((node) => node.display?.flowLayer !== undefined);
+  if (usesFlowContract) {
+    map.nodes!.filter((node) => node.archetype === "building").forEach((building) => {
+      const rooms = map.nodes!.filter((node) => node.parentId === building.id && node.archetype === "room");
+      if (rooms.length < 2) errors.push(`Building "${building.id}" must contain at least two rooms. Use a leaf archetype when there is no meaningful interior.`);
+    });
+  }
+
   const edgeIds = new Set<string>();
   map.edges!.forEach((edge, index) => {
     const prefix = `edges[${index}]`;
