@@ -36,6 +36,7 @@ yarn-error.log*
 
 /dist/
 /.wrangler/
+/.openai/hosting.json
 /outputs/
 /work/
 /packages/cli/dist/
