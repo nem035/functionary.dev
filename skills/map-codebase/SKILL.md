@@ -1,11 +1,16 @@
 ---
 name: map-codebase
-description: Inspect any software repository and translate its meaningful architecture and end-to-end flow into a validated Functionary City JSON map. Use when Codex needs to visualize, explain, or map an application, library, CLI, infrastructure project, compiler, data system, monorepo, or other codebase as districts, buildings, rooms, infrastructure, external systems, and evidence-backed relationships; when creating or refreshing `.functionary/map.json`; or when preparing data for the Functionary viewer.
+description: Inspect any software repository and translate its meaningful architecture and end-to-end flow into a validated Functionary City JSON map. Use when an AI coding agent needs to visualize, explain, or map an application, library, CLI, infrastructure project, compiler, data system, monorepo, or other codebase as districts, buildings, rooms, infrastructure, external systems, and evidence-backed relationships; when creating or refreshing `.functionary/map.json`; or when preparing data for the Functionary viewer.
 ---
 
 # Map Codebase
 
 Interpret the repository as an architecture and flow graph, not as a directory tree. Produce `.functionary/map.json` using the Functionary City schema.
+
+This skill is agent-neutral. Follow the workflow with any coding agent that can
+read repository files and return structured JSON. Agent-specific runners may
+add sandboxing or structured-output guarantees, but they must not change the
+map semantics or evidence rules below.
 
 ## Workflow
 

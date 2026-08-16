@@ -29,8 +29,72 @@ test("prints installable CLI help", () => {
   const result = spawnSync(process.execPath, [bin, "--help"], { encoding: "utf8" });
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /functionary map/);
-  assert.match(result.stdout, /read-only repository access/);
+  assert.match(result.stdout, /any AI coding agent/);
+  assert.match(result.stdout, /--agent-command/);
   assert.match(result.stdout, /--evidence auto/);
+});
+
+test("creates a portable prompt without launching an agent", async () => {
+  const root = await mkdtemp(join(tmpdir(), "functionary-prompt-"));
+  const promptPath = join(root, "prompt.md");
+  const result = spawnSync(process.execPath, [
+    bin, "prompt", root,
+    "--prompt-output", promptPath,
+    "--evidence", "none",
+  ], { encoding: "utf8" });
+  assert.equal(result.status, 0, result.stderr);
+  const prompt = await readFile(promptPath, "utf8");
+  assert.match(prompt, /agent-neutral map-codebase skill/);
+  assert.match(prompt, /Return only the complete Functionary City JSON object/);
+});
+
+test("maps with an arbitrary agent command using the portable protocol", async () => {
+  const root = await mkdtemp(join(tmpdir(), "functionary-agent-"));
+  const agent = join(root, "fake-agent.mjs");
+  const promptPath = join(root, "received-prompt.md");
+  const output = join(root, "map.json");
+  await writeFile(agent, `#!/usr/bin/env node
+import { writeFileSync } from "node:fs";
+let prompt = "";
+for await (const chunk of process.stdin) prompt += chunk;
+writeFileSync(process.env.FUNCTIONARY_TEST_PROMPT, prompt);
+writeFileSync(process.env.FUNCTIONARY_OUTPUT, JSON.stringify({ schemaVersion: 1, id: "portable", name: "Portable agent", nodes: [{ id: "system", label: "System", kind: "scope", archetype: "district" }, { id: "gateway", label: "Gateway", kind: "module", archetype: "gateway", parentId: "system" }], edges: [] }));
+`);
+  await chmod(agent, 0o755);
+
+  const result = spawnSync(process.execPath, [
+    bin, "map", root,
+    "--output", output,
+    "--agent-command", agent,
+    "--agent-arg=--fixture",
+    "--evidence", "none",
+  ], { encoding: "utf8", env: { ...process.env, FUNCTIONARY_TEST_PROMPT: promptPath } });
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /Agent runner:/);
+  assert.match(await readFile(promptPath, "utf8"), /agent-neutral map-codebase skill/);
+  const map = JSON.parse(await readFile(output, "utf8"));
+  assert.equal(map.name, "Portable agent");
+});
+
+test("accepts map JSON returned by an arbitrary agent on stdout", async () => {
+  const root = await mkdtemp(join(tmpdir(), "functionary-agent-stdout-"));
+  const agent = join(root, "stdout-agent.mjs");
+  const output = join(root, "map.json");
+  await writeFile(agent, `#!/usr/bin/env node
+for await (const _chunk of process.stdin) {}
+process.stdout.write(JSON.stringify({ schemaVersion: 1, id: "stdout", name: "Stdout agent", nodes: [{ id: "system", label: "System", kind: "scope", archetype: "district" }, { id: "gateway", label: "Gateway", kind: "module", archetype: "gateway", parentId: "system" }], edges: [] }));
+`);
+  await chmod(agent, 0o755);
+
+  const result = spawnSync(process.execPath, [
+    bin, "map", root,
+    "--output", output,
+    "--agent-command", agent,
+    "--evidence", "none",
+  ], { encoding: "utf8" });
+  assert.equal(result.status, 0, result.stderr);
+  const map = JSON.parse(await readFile(output, "utf8"));
+  assert.equal(map.name, "Stdout agent");
 });
 
 test("collects a compact static code evidence bundle", async () => {

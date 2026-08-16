@@ -684,7 +684,7 @@ function Landing({ onOpen, onImport }: { onOpen: (showcase: Showcase) => void; o
       </section>
 
       <section className="install" id="install">
-        <div><p className="kicker">Map your own</p><h2>One command.<br />A whole-system view.</h2><p>The Functionary CLI bundles the mapping skill. Codex reads the repository in a read-only sandbox, emits a validated map, and leaves the code untouched.</p></div>
+        <div><p className="kicker">Map your own</p><h2>One command.<br />A whole-system view.</h2><p>The Functionary CLI bundles an agent-neutral mapping skill and validator. Use the built-in Codex adapter or connect any coding agent that can inspect a repository and return JSON.</p></div>
         <div className="terminal-card">
           <div><span>CLI launch package</span><span>● ● ●</span></div>
           <code><b>$</b> {INSTALL_COMMAND}</code>

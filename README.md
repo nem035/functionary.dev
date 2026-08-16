@@ -10,20 +10,39 @@ documentation systems, monorepos, and other software shapes.
 
 ## Map a repository
 
-Prerequisites: Node.js 20 or newer and an installed, authenticated Codex CLI.
+Prerequisite: Node.js 20 or newer. Functionary works with any AI coding agent
+that can inspect local files and return JSON. The built-in Codex adapter provides
+the simplest one-command flow when an authenticated Codex CLI is installed.
 
 ```bash
 cd packages/cli
 npm pack
-npm install -g ./functionary-cli-0.2.0.tgz
+npm install -g ./functionary-cli-0.3.0.tgz
 
 functionary map ~/Dev/my-project
 ```
 
-The command creates `~/Dev/my-project/.functionary/map.json`. Codex receives
-read-only repository access; the CLI writes only the captured map. The package
-contains the mapping skill, structured-output schema, and deterministic
-validator.
+The command creates `~/Dev/my-project/.functionary/map.json`. With the default
+adapter, Codex receives read-only repository access. The package contains an
+agent-neutral mapping skill, structured-output schema, evidence collector, and
+deterministic validator.
+
+Use any local agent command by passing the mapping prompt on stdin. The command
+can write JSON to `$FUNCTIONARY_OUTPUT` or return only the JSON object on stdout:
+
+```bash
+functionary map ~/Dev/my-project --agent-command my-agent-wrapper
+functionary map . --agent-command my-agent-wrapper --agent-arg=--json
+```
+
+For agents that Functionary cannot launch directly, generate a self-contained
+prompt with the full skill and schema embedded, give it to the agent, then
+validate the returned map:
+
+```bash
+functionary prompt . --prompt-output /tmp/functionary-prompt.md
+functionary validate .functionary/map.json
+```
 
 Functionary can optionally use [Codebase Memory](https://github.com/DeusData/codebase-memory-mcp)
 as a fast structural index. When `codebase-memory-mcp` is installed, the CLI
@@ -36,6 +55,7 @@ Useful commands:
 ```bash
 functionary validate ~/Dev/my-project
 functionary skill
+functionary prompt ~/Dev/my-project
 functionary map ~/Dev/my-project --output /tmp/my-project-map.json
 functionary map ~/Dev/my-project --verbose
 functionary map ~/Dev/my-project --evidence none
@@ -67,8 +87,8 @@ data flow, and deployment. `display.flowLayer` describes semantic distance from
 the repository's interaction boundary, while `display.flowOrder` controls
 lateral fan-out. The viewer can infer both for legacy maps.
 
-The reusable agent workflow lives in [`skills/map-codebase`](./skills/map-codebase),
-and the installable package lives in [`packages/cli`](./packages/cli).
+The reusable, agent-neutral workflow lives in [`skills/map-codebase`](./skills/map-codebase),
+and the installable package plus runner adapters live in [`packages/cli`](./packages/cli).
 
 ## Development
 

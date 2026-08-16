@@ -1,7 +1,7 @@
 {
   "name": "functionary-cli",
-  "version": "0.2.0",
-  "description": "Map any repository into a validated, source-linked system city using Codex.",
+  "version": "0.3.0",
+  "description": "Map any repository into a validated, source-linked system city using any AI coding agent.",
   "type": "module",
   "bin": {
     "functionary": "bin/repo-city.mjs",
@@ -21,7 +21,7 @@
     "node": ">=20"
   },
   "keywords": [
-    "codex",
+    "ai-agent",
     "codebase",
     "architecture",
     "visualization"
