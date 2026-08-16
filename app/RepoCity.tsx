@@ -3,11 +3,16 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Line, MapControls, Text } from "@react-three/drei";
 import * as THREE from "three";
+import { configureTextBuilder } from "troika-three-text";
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CityEdge, CityMap, CityNode, EvidenceKind, SourceRef } from "../lib/city-map";
 import { validateCityMap } from "../lib/city-map";
 import { computeFlowLayout, type FlowLayout } from "../lib/flow-layout";
 import { defaultShowcase, showcases, type Showcase } from "../lib/showcase-maps";
+
+// Vinext's production bundle cannot serialize Troika's typesetting worker.
+// Main-thread typesetting keeps labels functional without the broken worker.
+configureTextBuilder({ useWorker: false });
 
 type Surface = "home" | "viewer";
 

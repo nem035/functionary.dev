@@ -34,6 +34,11 @@ const worker = {
       return Response.redirect(url, 308);
     }
 
+    if (url.pathname === "/favicon.ico") {
+      url.pathname = "/favicon.svg";
+      return Response.redirect(url, 308);
+    }
+
     if (url.pathname === "/_vinext/image") {
       const allowedWidths = [...DEFAULT_DEVICE_SIZES, ...DEFAULT_IMAGE_SIZES];
       return handleImageOptimization(request, {

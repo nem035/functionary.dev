@@ -1,5 +1,5 @@
-import RepoCity from "./RepoCity";
+import RepoCityClient from "./RepoCityClient";
 
 export default function Home() {
-  return <RepoCity />;
+  return <RepoCityClient />;
 }
