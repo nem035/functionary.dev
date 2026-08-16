@@ -869,7 +869,7 @@ function MapViewer({ map, notice, onDismissNotice, onHome, onImport }: { map: Ci
     <main className="shell">
       <header className="topbar">
         <button className="brand" type="button" onClick={onHome}><span className="brand-mark">F</span><span>functionary.dev</span></button>
-        <div className="stat"><span>Repository</span><strong>{map.repository ?? map.id}</strong></div>
+        <div className="stat repository-stat"><span>Repository</span><strong>{map.repository ?? map.id}</strong></div>
         <div className="stat"><span>Neighborhoods</span><strong>{layout.neighborhoods.length}</strong></div>
         <div className="stat"><span>Relationships</span><strong>{visibleEdges.length}</strong></div>
         <div className="header-actions"><button className="secondary-action" type="button" onClick={onHome}>Atlas</button><button className="map-action" type="button" onClick={onImport}>Open map</button></div>
